@@ -4,6 +4,8 @@ import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.multipdf.Splitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.StandardProtectionPolicy;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -85,5 +87,34 @@ public class PdfController {
         return "Pdf merged-" + fileNames[0].getName()+ " " + fileNames[1].getName() + " " + fileNames[2].getName();
     }
 
+    @GetMapping("/encrypting")
+    public String encrypt() throws IOException{
+        //Loading an existing document
+        File file = new File("C:/Users/Ezekiel/Desktop/PDF/z_to_B-encrypted/sample.pdf");
+        PDDocument document = PDDocument.load(file);
 
+        //Creating access permission object
+        AccessPermission ap = new AccessPermission();
+
+        //Creating StandardProtectionPolicy object
+        StandardProtectionPolicy spp = new StandardProtectionPolicy("1234", "1234", ap);
+
+        //Setting the length of the encryption key
+        spp.setEncryptionKeyLength(128);
+
+        //Setting the access permissions
+        spp.setPermissions(ap);
+
+        //Protecting the document
+        document.protect(spp);
+
+        System.out.println("Document encrypted");
+
+        //Saving the document
+        document.save("C:/Users/Ezekiel/Desktop/PDF/z_encrypted/Encrypted.pdf");
+        //Closing the document
+        document.close();
+
+        return "Encryption Successful";
+    }
 }
