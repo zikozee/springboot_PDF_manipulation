@@ -17,7 +17,6 @@ import java.util.List;
 
 @RestController
 public class PdfController {
-
     @GetMapping("/splitter")
     public String splitter() throws IOException {
 
